@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Gallery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+    <style>
+        .filter {
+            margin-bottom: 20px;
+        }
+        .filter select {
+            padding: 10px;
+            font-size: 16px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .gallery-item {
+            width: calc(20% - 15px); /* Adjust width to suit the grid */
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .gallery-item img {
+            width: 100%;
+            display: block;
+            border-radius: 5px 5px 0px 0px;
+        }
+        .caption{
+            background: #dedede;
+            padding: 20px;
+            border-radius: 0px 0px 5px 5px;
+        }
+        .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .class-info {
+            color: #555;    
+            font-size: 12px;
+        }
+
+        @media only screen and (max-width: 991px) {
+            .gallery-item {
+                width: calc(33.3333333% - 15px);
+            }
+        }
+        @media only screen and (max-width: 768px) {
+            .gallery-item {
+                width: calc(50% - 10px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <!-- Filter Dropdown -->
+                <div class="filter">
+                    <label for="gradeCategory">Choose Grade Category:</label><br><br>
+                    <select id="gradeCategory" class="form-control">
+                        <option value="all">All</option>
+                        <option value="Lower Grade Elementary">Lower Grade Elementary</option>
+                        <option value="Upper Grade Elementary">Upper Grade Elementary</option>
+                        <option value="Junior High">Junior High</option>
+                        <!-- Add more categories as needed -->
+                    </select>
+                </div>
+
+                <div class="gallery" id="gallery"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+    <script src="https://imagesloaded.desandro.com/imagesloaded.pkgd.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {  
+
+        // Fetch JSON from a URL and store it in a variable
+        // fetch('https://raw.githubusercontent.com/millenniaworldschool/dcw/refs/heads/main/dataProject.json')
+        // .then(response => response.json())
+        // .then(jsonData => {
+        //     // Store the fetched JSON in a variable
+        //     const data = jsonData;
+            
+        //     // Accessing the JSON data
+        //     console.log(data);
+        //     console.log(data.someProperty);  // Access specific properties as needed
+        // })
+        // .catch(error => {
+        //     console.error('Error fetching JSON:', error);
+        // });
+        
+        const data = [
+    {
+        "Student Full Name": "Bijak Maria Antoni",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1c490804f8d4b80c52_Bijak%20Maria%20Antoni.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1c490804f8d4b80c52_Bijak%20Maria%20Antoni.webp",
+        "Creation Title": "How to use AI",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Agnes Wijaya Edbert",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cfc911651b2783ad4_Agnes%20Wijaya%20Edbert.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cfc911651b2783ad4_Agnes%20Wijaya%20Edbert.webp",
+        "Creation Title": "How to use AI Properly",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Aira Sophia Wibawa",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1bf84521bb9ab30f69_Aira%20Sophia%20Wibawa.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1bf84521bb9ab30f69_Aira%20Sophia%20Wibawa.webp",
+        "Creation Title": "How to use AI Safely",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Aquilla Zepharia Van Anthony",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b70a274b9ba70caf8_Aquilla%20Zepharia%20van%20anthony.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b70a274b9ba70caf8_Aquilla%20Zepharia%20van%20anthony.webp",
+        "Creation Title": "The Crime Behind AI",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Asha Zanett Somadinata",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b1fcb4701f87d8088_Asha%20Zanett%20Somadinata.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b1fcb4701f87d8088_Asha%20Zanett%20Somadinata.webp",
+        "Creation Title": "How to use AI",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Daffy Adzkar Zulqornain",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1be223ca0067da1677_Daffy%20Adzkar%20Zulqornain.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1be223ca0067da1677_Daffy%20Adzkar%20Zulqornain.webp",
+        "Creation Title": "Tips for Using AI",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Darryl Orlando Maulana",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cc97741b17939c793_Darryl%20Orlando%20Maulana.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cc97741b17939c793_Darryl%20Orlando%20Maulana.webp",
+        "Creation Title": "How to Keep Your Self Safe from AI",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Deandre Gili Riwara",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b5f8a515bfd6d714c_DEANDRE%20GILI%20RIWARA.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b5f8a515bfd6d714c_DEANDRE%20GILI%20RIWARA.webp",
+        "Creation Title": "AI Infograph",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Denyar Gemintang",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cfda78aa77df518ed_Denyar%20Gemintang.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cfda78aa77df518ed_Denyar%20Gemintang.webp",
+        "Creation Title": "What is AI?",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Mochammad Barra Aymar",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b41ef3acb9d2bee06_Mochammad%20Barra%20Aymar.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1b41ef3acb9d2bee06_Mochammad%20Barra%20Aymar.webp",
+        "Creation Title": "Digital Citizenship",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Sophia Suri Gandhes Kinasih Martin",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cce6735b0b0059466_Sophia%20Suri%20Gandhes%20Kinasih%20Martin.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6724ea1cce6735b0b0059466_Sophia%20Suri%20Gandhes%20Kinasih%20Martin.webp",
+        "Creation Title": "Artificial Intelligence",
+        "Class": "Grade 7 Honshu",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Akbar Nabil Raufa Adzani",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1bc9421257b58f10e1_Akbar%20Nabil%20Raufa%20Adzani.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1bc9421257b58f10e1_Akbar%20Nabil%20Raufa%20Adzani.webp",
+        "Creation Title": "Identity Theft",
+        "Class": "Grade 9 Phoenix",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Cassiopeia Seraphina Van Anthony",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1c01acbfb0b462f00e_Cassiopeia%20Seraphina%20Van%20Anthony.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1c01acbfb0b462f00e_Cassiopeia%20Seraphina%20Van%20Anthony.webp",
+        "Creation Title": "Cyber Security",
+        "Class": "Grade 9 Phoenix",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Fathan Nazale Rachman",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1b9b5ca75c00d90d85_Fathan%20Nazale%20Rachman.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1b9b5ca75c00d90d85_Fathan%20Nazale%20Rachman.webp",
+        "Creation Title": "Dangerous About Identity Theft",
+        "Class": "Grade 9 Phoenix",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Kirara Salbiah Irsyad",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1b3546b810fbc62639_Kirara%20Salbiah%20Irsyad.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1b3546b810fbc62639_Kirara%20Salbiah%20Irsyad.webp",
+        "Creation Title": "Identity Theft",
+        "Class": "Grade 9 Phoenix",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Tuan Noorsha Veero",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1baa5f301b38e8b42c_Tuan%20Noorsha%20Veero.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67257e1baa5f301b38e8b42c_Tuan%20Noorsha%20Veero.webp",
+        "Creation Title": "What is Identity Theft",
+        "Class": "Grade 9 Phoenix",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Aida Danesh Azka Hermawan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfc86a9943730ea95_Aida%20Danesh%20Azka%20Hermawan.A.I%20poster_page-0001.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfc86a9943730ea95_Aida%20Danesh%20Azka%20Hermawan.A.I%20poster_page-0001.webp",
+        "Creation Title": "Artificial Intelligence",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Alethea Jeslyn Situmorang",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd99654f6726a7d4f1_Alethea%20Jeslyn%20Situmorang%20%20The%20danger%20of%20AI_20241030_112530_0000.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd99654f6726a7d4f1_Alethea%20Jeslyn%20Situmorang%20%20The%20danger%20of%20AI_20241030_112530_0000.webp",
+        "Creation Title": "The Danger of AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Amar Muhammad Dezan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd4eae3b90700354e8_Amar%20Muhammad%20Dezan.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd4eae3b90700354e8_Amar%20Muhammad%20Dezan.webp",
+        "Creation Title": "Positive Impact of AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Aralt Wicaksono",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd78530d529320d047_Aralt%20Wicaksono%20tips%20on%20whot%20to%20use%20chatgpt_page-0001.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd78530d529320d047_Aralt%20Wicaksono%20tips%20on%20whot%20to%20use%20chatgpt_page-0001.webp",
+        "Creation Title": "Tips on How to Use Chat GPT",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Aydira Malaika Ridwansyah",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd8458fe142f16c549_Aydira%20Malaika%20Ridwansyah.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd8458fe142f16c549_Aydira%20Malaika%20Ridwansyah.webp",
+        "Creation Title": "We Need to Talk About AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Bambu Anakin Pattisahusiwa",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfbffd955408907c9_Bambu%20Anakin%20Pattisahusiwa.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfbffd955408907c9_Bambu%20Anakin%20Pattisahusiwa.webp",
+        "Creation Title": "How Does Generative AI Work",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Britania Kirana Sinulingga",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd33cdf377ba0493dd_Britania%20Kirana%20Sinulingga.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd33cdf377ba0493dd_Britania%20Kirana%20Sinulingga.webp",
+        "Creation Title": "AI Awareness",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Cleo Madelaine Shenton",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729a13d5bd50b2b0a8fae41_Artifical%20in.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729a13d5bd50b2b0a8fae41_Artifical%20in.webp",
+        "Creation Title": "AI To Raise Awareness!",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Daffario Ali Falahrizwi",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd4b9029c78cfdd907_Daffario%20Ali%20Falahrizwi%20Black%20and%20Cream%20Vintage%20Newspaper%20Motivational%20Quote%20Poster.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd4b9029c78cfdd907_Daffario%20Ali%20Falahrizwi%20Black%20and%20Cream%20Vintage%20Newspaper%20Motivational%20Quote%20Poster.webp",
+        "Creation Title": "AI is Dangerous?",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Dindi Seraphina",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981ccfa02c1674d28f6f4_Dindi%20Seraphina.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981ccfa02c1674d28f6f4_Dindi%20Seraphina.webp",
+        "Creation Title": "Artificial Intelligence",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Eron Ricardo Rahman",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfcda1368d9bdf20f_eron%20canva_page-0001.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfcda1368d9bdf20f_eron%20canva_page-0001.webp",
+        "Creation Title": "What is AI?",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Gaea alandra",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cde54722aaeb64a75a_Gaea%20alandra%20HOW%20TO%20USE%20A.I%20BEING%20A%20GOOD%20DIGITAL%20CITIZEN.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cde54722aaeb64a75a_Gaea%20alandra%20HOW%20TO%20USE%20A.I%20BEING%20A%20GOOD%20DIGITAL%20CITIZEN.webp",
+        "Creation Title": "How to Use AI - Being a Good Digital Citizen",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Hana Arifatunnisa",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfbffd95540890811_Hana%20Arifatunnisa%20Take%20Care%20Of%20Your%20Earth_page-0001.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfbffd95540890811_Hana%20Arifatunnisa%20Take%20Care%20Of%20Your%20Earth_page-0001.webp",
+        "Creation Title": "Why Should we be More Aware of AI?",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Kaloka Prama Adanu",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cde000ef9fec554412_Kaloka%20Prama%20Adanu.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cde000ef9fec554412_Kaloka%20Prama%20Adanu.webp",
+        "Creation Title": "Three Things About AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Kenisha Azkayra Prabawa",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd33cdf377ba0493cd_Kenisha%20Azkayra%20Prabawa.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd33cdf377ba0493cd_Kenisha%20Azkayra%20Prabawa.webp",
+        "Creation Title": "Why Should AI be Stopped",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Mafaza Kanya Aisha",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfcda1368d9bdf26b_Mafaza%20Kanya%20Aisha%20Tips%20for%20using%20A.I._page-0001.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfcda1368d9bdf26b_Mafaza%20Kanya%20Aisha%20Tips%20for%20using%20A.I._page-0001.webp",
+        "Creation Title": "Tips for Using AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Muhammad Rafif Cakradinata",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfa02c1674d28f732_Muhammad%20Rafif%20Cakradinata%20WHAT%20IS%20A.I_page-0001.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdfa02c1674d28f732_Muhammad%20Rafif%20Cakradinata%20WHAT%20IS%20A.I_page-0001.webp",
+        "Creation Title": "What is AI?",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Naufal Permana Ilham",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd12491d132528a6f5_naufal%20A.I.%20poster_page-0001%20(1).webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cd12491d132528a6f5_naufal%20A.I.%20poster_page-0001%20(1).webp",
+        "Creation Title": "How to Teach AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Nayla Rizqani Nafisha",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cce54722aaeb64a72e_Nayla%20Rizqani%20Nafisha.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cce54722aaeb64a72e_Nayla%20Rizqani%20Nafisha.webp",
+        "Creation Title": "Two Things about AI",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Prinz Averey Ikhsan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdbce0b1362a47bbe7_Prinz%20Averey%20Ikhsan.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981cdbce0b1362a47bbe7_Prinz%20Averey%20Ikhsan.webp",
+        "Creation Title": "Artificial Intelligence",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Putri Athena Mutiksari",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981ccfcda1368d9bdf1ca_Putri%20Athena%20Mutiksari%20AI%20infographic.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672981ccfcda1368d9bdf1ca_Putri%20Athena%20Mutiksari%20AI%20infographic.webp",
+        "Creation Title": "AI Infographic",
+        "Class": "Grade 8 Masiroh",
+        "Grade Category": "Junior High"
+    },
+    {
+        "Student Full Name": "Kanaya Anissa Sabhira",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dde870e6b0e817183_Kanaya%20Anisa%204%20Cyberbullying.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dde870e6b0e817183_Kanaya%20Anisa%204%20Cyberbullying.webp",
+        "Creation Title": "Stop Cyberbullying",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Stellar Akia",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833c99654f6726a8e57b_Akia%20Stellar%20Cyber%20bullying.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833c99654f6726a8e57b_Akia%20Stellar%20Cyber%20bullying.webp",
+        "Creation Title": "Cyberbullying",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kareem Abimana Nugraha",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672ac8c1b686dc5c76417234_kareem.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672ac8c1b686dc5c76417234_kareem.webp",
+        "Creation Title": "Our School Community",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Terence Gabriel Situmorang",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833f178be75947eae355_Terrence%20Gabriel%20Situmorang.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833f178be75947eae355_Terrence%20Gabriel%20Situmorang.webp",
+        "Creation Title": "Media Balance in School Community",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Augusto batara mahameru keize",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833d3d8968f4ca853977_Augusto%20Batara%20what%20is%20digital%20citizenship.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833d3d8968f4ca853977_Augusto%20Batara%20what%20is%20digital%20citizenship.webp",
+        "Creation Title": "Guide to being a good digital citizen",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Ida Ayu Sinar",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833d3d8968f4ca853970_Ida%20Ayu%20Sinar%20stop%20cyberbullyinhg.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833d3d8968f4ca853970_Ida%20Ayu%20Sinar%20stop%20cyberbullyinhg.webp",
+        "Creation Title": "Stop Cyberbulliying",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Keenaradhitia Gendhis Puti Dahayu",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dafe521a4322d4dae_Keenaradhitia%20Gendhis%20Puti%20Dahayu%20%20Digital%20well-being.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dafe521a4322d4dae_Keenaradhitia%20Gendhis%20Puti%20Dahayu%20%20Digital%20well-being.webp",
+        "Creation Title": "Digital well being",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Himada El Kashva Nugraha",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672983436a55c3202e7ff990_Himada%20El%20Kashva%20Nugraha%20(SMM)%200t.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/672983436a55c3202e7ff990_Himada%20El%20Kashva%20Nugraha%20(SMM)%200t.webp",
+        "Creation Title": "Gadget rules",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Raiden Jibriel Dwisatria",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dda163c48a5538154_Raiden%20Jibriel%20Dwisatria%20(Gemala%20Ananda)%20aa.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dda163c48a5538154_Raiden%20Jibriel%20Dwisatria%20(Gemala%20Ananda)%20aa.webp",
+        "Creation Title": "What is Digital Citizenship",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Sofia Putri Karenia",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833d49c1bdf40ef3bcad_Sofia%20Putri%20Karenia%20My%20Media%20Choice%20(digital%20citizenship%20week).webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833d49c1bdf40ef3bcad_Sofia%20Putri%20Karenia%20My%20Media%20Choice%20(digital%20citizenship%20week).webp",
+        "Creation Title": "My Media Choice",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Gael Mandala Subakti",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833de54722aaeb65eb3d_Gael%20Mandala%20Subakti.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833de54722aaeb65eb3d_Gael%20Mandala%20Subakti.webp",
+        "Creation Title": "Digital School Community",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Khayru Lazuardi Mahitala",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dfcda1368d9bf076d_Khayru%20Lazuardi%20Mahitala.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833dfcda1368d9bf076d_Khayru%20Lazuardi%20Mahitala.webp",
+        "Creation Title": "Millennia Community",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Muhammad Ehnaf Askar",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833df3babf933f2ac356_DC%20ASKAR.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6729833df3babf933f2ac356_DC%20ASKAR.webp",
+        "Creation Title": "Dont waste time with your phone",
+        "Class": "Grade 4 Nusa Penida",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kenzou Gibran Mahardika",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622b177da9a46842b1e_infografis%20kenzou.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622b177da9a46842b1e_infografis%20kenzou.webp",
+        "Creation Title": "Stop Cyber Bully!",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Arthur Wisesa Raharjo",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c62203a2f0c3e4f950a8_infografis%20arthur.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c62203a2f0c3e4f950a8_infografis%20arthur.webp",
+        "Creation Title": "Safe and Unsafe Information in Internet",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Gede Gian Maheshvara",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6230d6b60654be301e7_infografis%20gian.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6230d6b60654be301e7_infografis%20gian.webp",
+        "Creation Title": "Cyber Bullying",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Anak Agung Gde Bagus Lal Pranaya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c62303c1fc9c2e441481_infografis%20lal.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c62303c1fc9c2e441481_infografis%20lal.webp",
+        "Creation Title": "Ways to Respond Cyberbullying",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Clio Tanaya Syafricilia",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622046186a0fcecede6_infografis%20clio.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622046186a0fcecede6_infografis%20clio.webp",
+        "Creation Title": "Privacy of The Internet",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Abimanyu Pradja Soesetyo",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6232bc1d0fdab0c50cf_infografis%20abi.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6232bc1d0fdab0c50cf_infografis%20abi.webp",
+        "Creation Title": "How to Avoid Clickbait",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Rafandra Mahira Wirawan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6239aac78078e0ed27d_infografis%20Hira.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6239aac78078e0ed27d_infografis%20Hira.webp",
+        "Creation Title": "About Clickbait",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Khalfani Wira Bellvania",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623aa624aec62eb7ce7_infografis%20bellva.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623aa624aec62eb7ce7_infografis%20bellva.webp",
+        "Creation Title": "How to Get off Your Phone",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Jordy Ramadhan Abhipraya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622442c3dbe430d77e6_Infografis%20jordy.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622442c3dbe430d77e6_Infografis%20jordy.webp",
+        "Creation Title": "Negative Impact of Digital Media",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Sherryn Weissa Cokro",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622a2107a3a31d9b489_infografis%20sherryn.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622a2107a3a31d9b489_infografis%20sherryn.webp",
+        "Creation Title": "Be Safe on Online!",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Mikayla Bikrun Sakhi",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c62316ceb4c27c3368e2_infografis%20mika.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c62316ceb4c27c3368e2_infografis%20mika.webp",
+        "Creation Title": "Turn Off Your Gadget Now",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Abia Kyra Naylandra",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6221854390ced51c3b6_infografis%20abia.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6221854390ced51c3b6_infografis%20abia.webp",
+        "Creation Title": "Protect Your Self from The Internet",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Chantal Eduward",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623310741af16642888_infografis%20chantal.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623310741af16642888_infografis%20chantal.webp",
+        "Creation Title": "Negative Effect of Media and Information",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Agha Pramudya Athmar",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623278798a3a2e47b6c_infografis%20agha.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623278798a3a2e47b6c_infografis%20agha.webp",
+        "Creation Title": "Online Security Tips",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Lautan Cahaya Timur",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622c3a2b3f428a5ff68_infografis%20Laut.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c622c3a2b3f428a5ff68_infografis%20Laut.webp",
+        "Creation Title": "What is Cyberbullying",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Haura Atqiya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6222dfb3b8a49b462d3_infografis%20Rara.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c6222dfb3b8a49b462d3_infografis%20Rara.webp",
+        "Creation Title": "Clickbait",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Keivaro Ferrer Prasetya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623a33edd1147bdf5a8_infografis%20ferrer.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6733c623a33edd1147bdf5a8_infografis%20ferrer.webp",
+        "Creation Title": "Impact of Digital Media",
+        "Class": "Grade 5 Lombok",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Ziqri Zhofron Putro",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d051da46b92a7ea5e45_ziqri%20zhofron.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d051da46b92a7ea5e45_ziqri%20zhofron.webp",
+        "Creation Title": "Daily Activity",
+        "Class": "Grade 6 Ischia",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Nadrina Cheryl Findriawan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d05c034f244690ce0ad_cherryl.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d05c034f244690ce0ad_cherryl.webp",
+        "Creation Title": "Stay Safe Online",
+        "Class": "Grade 6 Ischia",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Ahmad Zayd Al Malik",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732386e4bbadca25124e755_zayd.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732386e4bbadca25124e755_zayd.webp",
+        "Creation Title": "Learn How To Be Safe On The Internet",
+        "Class": "Grade 6 Ischia",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Andrew Nolan Parinding",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d05c034f244690ce0c3_Andrew%20Nolan%20Parinding.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d05c034f244690ce0c3_Andrew%20Nolan%20Parinding.webp",
+        "Creation Title": "Your Personal Guide of Staying Safe",
+        "Class": "Grade 6 Ischia",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Farieq Husein Shihab",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d05472820398a2811c3_Farieq%20poster%20DCW2024-1.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/67317d05472820398a2811c3_Farieq%20poster%20DCW2024-1.webp",
+        "Creation Title": "4 Tips for Good Discussion",
+        "Class": "Grade 6 Ischia",
+        "Grade Category": "Upper Grade Elementary"
+    },
+    {
+        "Student Full Name": "Aleesha Nahda Atmarini Dimpu",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66366b87507c8e615d8_Aleesha%20Nahda%20Atmarini%20Dimpu.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66366b87507c8e615d8_Aleesha%20Nahda%20Atmarini%20Dimpu.webp",
+        "Creation Title": "Ipad Rules",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Alesa Wira Belltania",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662d0b371b9d20ecd5f_Alesa%20Wira%20Belltania.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662d0b371b9d20ecd5f_Alesa%20Wira%20Belltania.webp",
+        "Creation Title": "Be Carefull of Apps",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Altair Kurniawan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66397aa9621cbb93ff8_%20Altair%20Kurniawan%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66397aa9621cbb93ff8_%20Altair%20Kurniawan%20.webp",
+        "Creation Title": "Be safe & Smart",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Ammara Maryam Renata",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6632e7bfd9d09371b52_Ammara%20Maryam%20Renata%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6632e7bfd9d09371b52_Ammara%20Maryam%20Renata%20.webp",
+        "Creation Title": "How to use device safely",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Calysta Alesha Lubna",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a663150e061c57150471_Calysta%20Alesha%20Lubna.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a663150e061c57150471_Calysta%20Alesha%20Lubna.webp",
+        "Creation Title": "How to use Device Safely",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Egarra Nou Prastya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6697060f1754e84e6a3_Egarra%20Nou%20Prastya.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6697060f1754e84e6a3_Egarra%20Nou%20Prastya.webp",
+        "Creation Title": "Think Twice",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Frazushta Diyari Permana",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66297aa9621cbb93f36_Frazushta%20Diyari%20Permana.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66297aa9621cbb93f36_Frazushta%20Diyari%20Permana.webp",
+        "Creation Title": "Keep a safe Digital Citizenship",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Gemilang Tawa Abinaya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a665da15ac88494858b1_Gemilang%20Tawa%20Abinaya%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a665da15ac88494858b1_Gemilang%20Tawa%20Abinaya%20.webp",
+        "Creation Title": "Tablet rules for younger kids",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Jeyshaan Singh Rahal",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a663557b17a286de4564_Jeyshaan%20Singh%20Rahal.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a663557b17a286de4564_Jeyshaan%20Singh%20Rahal.webp",
+        "Creation Title": "Keep your Password For Yourself!",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kenzie Wastu Widyatara",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6635d9709862e982a7b_Kenzie%20Wastu%20Widyatara.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6635d9709862e982a7b_Kenzie%20Wastu%20Widyatara.webp",
+        "Creation Title": "Keep Safe online",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kiran Bhanurasmi Aryasena",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a663b8850cdc1cd0f28a_Kiran%20Bhanurasmi%20Aryasena%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a663b8850cdc1cd0f28a_Kiran%20Bhanurasmi%20Aryasena%20.webp",
+        "Creation Title": "T H I N K",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Magali Putri",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66cfdff76865fcd2776_Magali%20Putri%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66cfdff76865fcd2776_Magali%20Putri%20.webp",
+        "Creation Title": "Safe In Online Space",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "mikaela anjani ganie",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662a8fcb48d3045dd58_mikaela%20anjani%20ganie%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662a8fcb48d3045dd58_mikaela%20anjani%20ganie%20.webp",
+        "Creation Title": "Be A good Digital Citizenship",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Milanne Adhista Madewi",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66203d90b9ad936dcbd_Milanne%20Adhista%20Madewi.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a66203d90b9ad936dcbd_Milanne%20Adhista%20Madewi.webp",
+        "Creation Title": "Carefull of Stranger",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Muhammad Kenzie Azka",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662ae0e12e0a810af07_Muhammad%20Kenzie%20Azka%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662ae0e12e0a810af07_Muhammad%20Kenzie%20Azka%20.webp",
+        "Creation Title": "Pause & Think Moment",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "taskya alula",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6621ecc3b35a94f5145_taskya%20alula%20.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a6621ecc3b35a94f5145_taskya%20alula%20.webp",
+        "Creation Title": "Online Hour Rule",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Trah Kandara Biru",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662a8fcb48d3045dd2b_Trah%20Kandara%20Biru.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a662a8fcb48d3045dd2b_Trah%20Kandara%20Biru.webp",
+        "Creation Title": "Think before U click",
+        "Class": "Grade 3 Bali",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Alesha kiara wardana-",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e397aa9621cbb8bda8_Alesha%20kiara%20wardana-1.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e2a1ba649ced8ac3db_Alesha%20kiara%20wardana-.jpg",
+        "Creation Title": "Phone Restriction",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Althario Sakha Rajendra",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e3313212adee3b1534_Althario%20Sakha%20Rajendra1.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e2e4999d561f295fa0_Althario%20Sakha%20Rajendra.jpg",
+        "Creation Title": "Do not Screen Time",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Arsyanendra Abid Prayitno",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e4313212adee3b1614_Arsyanendra%20Abid%20Prayitno%201.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e0a1ba649ced8ac047_Arsyanendra%20Abid%20Prayitno.jpg",
+        "Creation Title": "How to not get Device distraction",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Aubrey Prianka Wide",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1313212adee3b10b4_Aubrey%20Prianka%20Wide2.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e26d3daa19fed7a1ed_Aubrey%20Prianka%20Wide.jpg",
+        "Creation Title": "Don't Play device too much",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Callula Nadya Kusuma",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e3d12ebee771b35eaf_Callula%20Nadya%20Kusuma%201.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e203d90b9ad9366b4d_Callula%20Nadya%20Kusuma.jpg",
+        "Creation Title": "Stop if too much Screen Time",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Eichiro D lucky Namberwan W",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e2f1596b9dcf6cf250_Eiichiro%20D%20Lucky%20Namberwan.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e2f1596b9dcf6cf250_Eiichiro%20D%20Lucky%20Namberwan.jpg",
+        "Creation Title": "Monday No Gadget day",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Eleander Radeva",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e31e9c57763d4d208d_Eleander%20Radeva2.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1f1c5bc34e6cc698c_Eleander%20Radeva.jpg",
+        "Creation Title": "Internet restriction",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Emilio Aimar",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e266b87507c8e5adda_Emilio%20Aimar1.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1c7043e5d40e3907b_Emilio%20Aimar.jpg",
+        "Creation Title": "Gadget Apps",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kalia Aubrey Shaqueena",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e0d0cab7f2581f1ea2_Kalia%20Aubrey%20Shaqueena%201.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e27aefd9e3f94c6eb3_Kalia%20Aubrey%20Shaqueena.jpg",
+        "Creation Title": "Don't Play Phone",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kania Andira Bintari",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e203d90b9ad9366b54_Kania%20Andira%20Bintari.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e3e81bca5c8616d980_Kania%20Andira%20Bintari%201.jpg",
+        "Creation Title": "How U Fell",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Kenzie Valerian Syarif",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e3f1c5bc34e6cc6afe_Kenzie%20Valerian%20Syarif%201.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e103d90b9ad9366823_Kenzie%20Valerian%20Syarif.jpg",
+        "Creation Title": "Usefull Apps",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "M Sakha Andaru",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e31ecc3b35a94edcfa_M%20Sakha%20Andaru1.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1843403c9d2652d4d_M%20Sakha%20Andaru.jpg",
+        "Creation Title": "Don't use this Apps.",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Muhammad Arsakhi Zada Uwais",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1c144f16c3378fd11_Muhammad%20Arsakhi%20Zada%20Uwais1.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e135a2b11d0b46b6e6_Muhammad%20Arsakhi%20Zada%20Uwais.jpg",
+        "Creation Title": "Choose your Apps Wisely",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Panerang Giri Mustafa",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e3557b17a286ddd92c_Panerang%20Giri%20Mustafa%202.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1a8fcb48d304583be_Panerang%20Giri%20Mustafa%201.jpg",
+        "Creation Title": "Turn Off Device",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Rei Kalandra Siswanto",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e3c7043e5d40e39144_Rei%20Kalandra%20Siswanto1.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e2abcff2ad74b316dd_Rei%20Kalandra%20Siswanto.jpg",
+        "Creation Title": "Time Limit device use",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Zaydan Maqil Hezarfen",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e110b0358ea36a3143_Zaydan%20Maqil%20Hezarfen2.jpg",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a5e1beec6bec47422c6e_Zaydan%20Maqil%20Hezarfen1.jpg",
+        "Creation Title": "Digital Citizenship",
+        "Class": "Grade 2 Tasmania",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Aqeela Rumaisha Prasetyo",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748313212adee3c3016_Aqeela%20Rumaisha%20Prasetyo.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748313212adee3c3016_Aqeela%20Rumaisha%20Prasetyo.webp",
+        "Creation Title": "How to be a good Digital",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Arkanara Reska Wimbadi",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748ae0e12e0a81184f8_Arkanara%20Reska%20Wimbadi.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748ae0e12e0a81184f8_Arkanara%20Reska%20Wimbadi.webp",
+        "Creation Title": "Good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Arrafi Xavier Santoso",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a7482e7bfd9d0937e0b7_Arrafi%20Xavier%20Santoso.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a7482e7bfd9d0937e0b7_Arrafi%20Xavier%20Santoso.webp",
+        "Creation Title": "Pause & Set",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Arsyakha Manendra Putra Alashri",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a74723eb3730b91c58c4_Arsyakha%20Manendra%20Putra%20Alashri.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a74723eb3730b91c58c4_Arsyakha%20Manendra%20Putra%20Alashri.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Ayska Raffasya Zen",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a747313212adee3c2fcb_Ayska%20Raffasya%20Zen.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a747313212adee3c2fcb_Ayska%20Raffasya%20Zen.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Daninda Farzana Ardian",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a7477060f1754e857758_Daninda%20Farzana%20Ardian.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a7477060f1754e857758_Daninda%20Farzana%20Ardian.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Fazeela Shazva Pratama",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748ecca1c94b5a7aa81_Fazeela%20Shazva%20Pratama.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748ecca1c94b5a7aa81_Fazeela%20Shazva%20Pratama.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Garwita Hayu Kinara",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a7481c92fd725524d433_Garwita%20Hayu%20Kinara.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a7481c92fd725524d433_Garwita%20Hayu%20Kinara.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Irgi Yudhistira Arfan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748ecca1c94b5a7aa41_Irgi%20Yudhistira%20Arfan.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748ecca1c94b5a7aa41_Irgi%20Yudhistira%20Arfan.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Mikail Aldebaran Darmawan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a74708ec2349281a982b_Mikail%20Aldebaran%20Darmawan.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a74708ec2349281a982b_Mikail%20Aldebaran%20Darmawan.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Narumi Cantika Niti Sukma",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748a7b2a9f9eacf51a9_Narumi%20Cantika%20Niti%20Sukma.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748a7b2a9f9eacf51a9_Narumi%20Cantika%20Niti%20Sukma.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Puti Mayra Kanahaya",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748c144f16c337a14bc_Puti%20Mayra%20Kanahaya.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748c144f16c337a14bc_Puti%20Mayra%20Kanahaya.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Rajendra Rafka Ramadhan",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748843403c9d26635be_Rajendra%20Rafka%20Ramadhan.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748843403c9d26635be_Rajendra%20Rafka%20Ramadhan.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Raqilla Kanaka Hadi Putra",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a746ae0e12e0a8118192_Raqilla%20Kanaka%20Hadi%20Putra.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a746ae0e12e0a8118192_Raqilla%20Kanaka%20Hadi%20Putra.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Reynandra Arshaka Widayanto",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a74723eb3730b91c588d_Reynandra%20Arshaka%20Widayanto.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a74723eb3730b91c588d_Reynandra%20Arshaka%20Widayanto.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Shabiya Adifa Permana",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a747e4999d561f2a86bc_Shabiya%20Adifa%20Permana.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a747e4999d561f2a86bc_Shabiya%20Adifa%20Permana.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    },
+    {
+        "Student Full Name": "Sukainah shafura alatas",
+        "Thumbnail Image": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748557b17a286dedb2a_Sukainah%20shafura%20alatas.webp",
+        "Url": "https://cdn.prod.website-files.com/67138ae7be2521c91c2359cb/6732a748557b17a286dedb2a_Sukainah%20shafura%20alatas.webp",
+        "Creation Title": "How to be a good Digital Citizenship",
+        "Class": "Grade 1 Santorini",
+        "Grade Category": "Lower Grade Elementary"
+    }
+] 
+        const gallery = document.getElementById("gallery");
+        const filter = document.getElementById("gradeCategory");
+
+        function displayItems(items) {
+            gallery.innerHTML = '';
+            items.forEach(item => {
+                const galleryItem = document.createElement("div");
+                galleryItem.classList.add("gallery-item");
+                galleryItem.innerHTML = `
+                    <a href="${item.Url}" data-fancybox="gallery" data-caption="${item['Creation Title']} by ${item['Student Full Name']}">
+                        <img src="${item['Thumbnail Image']}" alt="${item['Creation Title']}">
+                    </a>
+                    <div class="caption">
+                        <div class="title">${item['Creation Title']}</div>
+                        <div class="class-info">${item['Student Full Name']}</div>
+                    </div>
+                `;
+                gallery.appendChild(galleryItem);
+            });
+
+            // Wait for images to load before initializing Masonry
+            imagesLoaded(gallery, function() {
+                new Masonry(gallery, {
+                    itemSelector: '.gallery-item',
+                    columnWidth: '.gallery-item',
+                    percentPosition: true,
+                    gutter: 15
+                });
+            });
+
+            $('[data-fancybox]').fancybox(); // Initialize Fancybox
+        }
+
+        function filterItems() {
+            const category = filter.value;
+            const filteredItems = category === "all" ? data : data.filter(item => item['Grade Category'] === category);
+            displayItems(filteredItems);
+        }
+
+        filter.addEventListener("change", filterItems);
+        displayItems(data); // Initial display
+        });
+    </script>  
+</body>
+</html>
